@@ -18,6 +18,12 @@ FinanceGuard is a personal finance management application designed to help users
 - **Database**: MySQL
 - **Tools & Libraries**: Maven, Lombok, Chart.js
 
+### Video Demonstration
+
+Check out the video demonstration of FinanceGuard to see the project in action:  
+[Watch the Demo Video on Canva](https://www.canva.com/design/DAGQQG2vIMU/bWzu4LN1rD9n6VlvDIzAfA/edit?utm_content=DAGQQG2vIMU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+
 ### Installation
 
 To run this project locally, follow these steps:
@@ -66,4 +72,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Contact
 
-For any inquiries or support, please reach out to Pudamya Rathnayake at [pudamya.rathnayake.contact@gmail.com](mailto:pudamya.rathnayake.contact@gmail.com).
+For any inquiries or support, please reach out to Pudamya Rathnayake at [pudamya.rathnayake.contact@gmail.com](mailto:pudamya.rathnayake.contact@gmail.com).                                                                                                                                                                                                                                                                            
