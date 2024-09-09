@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            color: #003366;
+            padding-left: 220px;
+        }
+        .navbar {
+            background-color: #003366;
+        }
+        .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+        .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"%3E%3Cpath stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /%3E%3C/svg%3E');
+        }
+        .card-header {
+            background-color: #003366;
+            color: #ffffff;
+        }
+        .btn-primary {
+            background-color: #004080;
+            border-color: #003366;
+        }
+        .btn-primary:hover {
+            background-color: #003366;
+            border-color: #002244;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #e6f2ff;
+        }
+        .table th, .table td {
+            color: #003366;
+        }
+        .table thead th {
+            background-color: #003366;
+            color: #ffffff;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sidenav {
+            height: 100%;
+            width: 220px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #003366;
+            padding-top: 20px;
+            color: #ffffff;
+        }
+        .sidenav a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #ffffff;
+            display: block;
+        }
+        .sidenav a:hover {
+            background-color: #004080;
+            color: #ffffff;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .summary-card {
+            background-color: #e6f2ff;
+            border: 2px solid #003366;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: #003366;
+            margin-bottom: 20px;
+        }
+        .summary-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .summary-card p {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        #incomeExpenseChart {
+            max-width: 400px;
+            height: 300px;
+            margin: auto;
+        }
+        #monthlyTrendsChart {
+            width: 100%;
+            height: 300px;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">-->
+    <a class="navbar-brand" href="#">FinanceGuard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="transactionDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+                <div class="dropdown-menu" aria-labelledby="transactionDropdown">
+                    <a class="dropdown-item" href="/transactions/new"><i class="fas fa-plus"></i> Add Transactions</a>
+                    <a class="dropdown-item" href="/transactions/history"><i class="fas fa-history"></i> Transaction History</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-tags"></i> Category
+                </a>
+                <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                    <a class="dropdown-item" href="/categories/new"><i class="fas fa-plus"></i> Add Category</a>
+                    <a class="dropdown-item" href="/categories/manage"><i class="fas fa-cogs"></i> Manage Categories</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/profile"><i class="fas fa-user"></i> Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="sidenav">
+    <a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/transactions/new"><i class="fas fa-exchange-alt"></i> Add Transactions</a>
+    <a href="/transactions/history"><i class="fas fa-history"></i> Transaction History</a>
+    <a href="/categories/new"><i class="fas fa-plus"></i> Add Categories</a>
+    <a href="/categories/manage"><i class="fas fa-cogs"></i> Manage Categories</a>
+    <a href="/user/profile"><i class="fas fa-user"></i> Profile</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+<div class="main-content container mt-4">
+    <h2><center>Welcome</center></h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="summary-card">
+                <h3>Total Income</h3>
+                <p class="text-success" id="totalIncome"></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card">
+                <h3>Total Expenses</h3>
+                <p class="text-danger" id="totalExpenses"></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card">
+                <h3>Balance</h3>
+                <p class="text-primary" id="balance"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <canvas id="incomeExpenseChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="monthlyTrendsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">Recent Transactions</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.transactionDate}">Date</td>
+                    <td th:text="${transaction.category.name}">Category</td>
+                    <td th:text="${transaction.description}">Description</td>
+                    <td th:text="${transaction.amount}">Amount</td>
+                    <td><a th:href="@{/transactions/{id}(id=${transaction.id})}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/dashboard-data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('totalIncome').innerText = `${data.totalIncome}`;
+                document.getElementById('totalExpenses').innerText = `${data.totalExpenses}`;
+                document.getElementById('balance').innerText = `${data.balance}`;
+
+                const totalIncome = data.totalIncome;
+                const totalExpenses = data.totalExpenses;
+                const monthlyTrends = data.monthlyTrends;
+
+                const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+                const monthData = [];
+
+                months.forEach(month => {
+                    monthData.push(monthlyTrends[month] || 0);
+                });
+
+                const ctxPie = document.getElementById('incomeExpenseChart').getContext('2d');
+                new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Income', 'Expenses'],
+                        datasets: [{
+                            data: [totalIncome, totalExpenses],
+                            backgroundColor: ['#36A2EB', '#FF6384'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.label + " : " + tooltipItem.raw;
+                                    }
+                                }
+                            }
+                        },
+                        maintainAspectRatio: false,
+                    }
+                });
+
+                const ctxBar = document.getElementById('monthlyTrendsChart').getContext('2d');
+                new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Monthly Trends',
+                            data: monthData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.label + " : " + tooltipItem.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Months',
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount',
+                                }
+                            }
+                        },
+                        maintainAspectRatio: false,
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
